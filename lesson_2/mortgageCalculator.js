@@ -4,13 +4,13 @@ const readline = require("readline-sync");
 
 // Mortgage monthtly payment algorithm
 function calculateMonthlyPayment(loanAmount, apr, loanDurationYears) {
-  const MONTHLY_INTEREST = apr / 100 / 12;
-  const LOAN_DURATION_MONTHS = loanDurationYears * 12;
+  const monthlyInterest = apr / 100 / 12;
+  const loanDurationMonths = loanDurationYears * 12;
 
   const monthlyPayment =
     loanAmount *
-    (MONTHLY_INTEREST /
-      (1 - Math.pow(1 + MONTHLY_INTEREST, -LOAN_DURATION_MONTHS)));
+    (monthlyInterest /
+      (1 - Math.pow(1 + monthlyInterest, -loanDurationMonths)));
 
   return monthlyPayment;
 }
@@ -22,12 +22,7 @@ function prompt(message) {
 
 // validate number
 function invalidNumber(number) {
-  return number.trim() === "" || Number.isNaN(Number(number));
-}
-
-// check if integer
-function isInt(number) {
-  return number % 2 !== 0;
+  return number < 0 || number.trim() === "" || Number.isNaN(Number(number));
 }
 
 // Start of program
@@ -51,8 +46,13 @@ while (true) {
 
   prompt("Please input the mortgage duration in years:");
   let loanDurationYears = readline.question();
-  while (invalidNumber(loanDurationYears) || isInt(loanDurationYears)) {
-    prompt("Invalid input, try again (years must be whole numbers)...");
+  while (
+    invalidNumber(loanDurationYears) ||
+    !Number.isInteger(Number(loanDurationYears))
+  ) {
+    prompt(
+      "Invalid input, try again \n (Example: 2.5 is invalid. Round to the nearest whole number)..."
+    );
     loanDurationYears = readline.question();
   }
 
