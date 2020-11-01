@@ -25,6 +25,11 @@ function invalidNumber(number) {
   return number.trim() === "" || Number.isNaN(Number(number));
 }
 
+// check if integer
+function isInt(number) {
+  return number % 2 !== 0;
+}
+
 // Start of program
 prompt("Calculate your mortgage with this calculator");
 // Create a loop so user can make multiple calculations
@@ -33,21 +38,21 @@ while (true) {
   prompt("Please input your loan amount: ");
   let loanAmount = readline.question();
   while (invalidNumber(loanAmount)) {
-    prompt("Please input a valid amount...");
+    prompt("Invalid input, try again ...");
     loanAmount = readline.question();
   }
 
-  prompt("Please input the Annual Percentage Rate (APR), eg. 2.75% :");
+  prompt("Please input the Annual Percentage Rate (APR), eg. 2.75% => 2.75:");
   let apr = readline.question();
   while (invalidNumber(apr)) {
-    prompt("Please input a valid amount...");
+    prompt("Invalid input, try again ...");
     apr = readline.question();
   }
 
   prompt("Please input the mortgage duration in years:");
   let loanDurationYears = readline.question();
-  while (invalidNumber(loanDurationYears)) {
-    prompt("Please input a valid amount...");
+  while (invalidNumber(loanDurationYears) || isInt(loanDurationYears)) {
+    prompt("Invalid input, try again (years must be whole numbers)...");
     loanDurationYears = readline.question();
   }
 
@@ -69,7 +74,7 @@ while (true) {
   );
   let again = readline.question();
   while (!["1", "2"].includes(again)) {
-    prompt("Please input a valid selection (1 or 2):");
+    prompt("Invalid input, try again  (1 or 2):");
     again = readline.question();
   }
 
