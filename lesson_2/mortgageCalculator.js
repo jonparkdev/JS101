@@ -32,6 +32,8 @@ prompt("Calculate your mortgage with this calculator");
 while (true) {
   prompt("Please input your loan amount: ");
   let loanAmount = readline.question();
+
+  // validate input
   while (invalidNumber(loanAmount)) {
     prompt("Invalid input, try again ...");
     loanAmount = readline.question();
@@ -39,6 +41,8 @@ while (true) {
 
   prompt("Please input the Annual Percentage Rate (APR), eg. 2.75% => 2.75:");
   let apr = readline.question();
+
+  // validate input
   while (invalidNumber(apr)) {
     prompt("Invalid input, try again ...");
     apr = readline.question();
@@ -46,6 +50,8 @@ while (true) {
 
   prompt("Please input the mortgage duration in years:");
   let loanDurationYears = readline.question();
+
+  // validate input
   while (
     invalidNumber(loanDurationYears) ||
     !Number.isInteger(Number(loanDurationYears))
@@ -73,6 +79,8 @@ while (true) {
     "Would you like to make another calculation? Input '1' for YES and '2' for NO:"
   );
   let again = readline.question();
+
+  // validate input
   while (!["1", "2"].includes(again)) {
     prompt("Invalid input, try again  (1 or 2):");
     again = readline.question();

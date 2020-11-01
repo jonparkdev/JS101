@@ -1,57 +1,99 @@
 const readline = require("readline-sync");
-const VALID_CHOICES = ["rock", "paper", "scissors"];
+
+// constants
+const VALID_CHOICES = {
+  r: "rock",
+  p: "paper",
+  sc: "scissors",
+  l: "lizard",
+  sp: "spock",
+};
+const VALID_CHOICES_KEYS = Object.keys(VALID_CHOICES);
+const VALID_CHOICES_VALUES = Object.values(VALID_CHOICES);
+const WINNING_COMBOS = {
+  rock: ["scissors", "lizard"],
+  paper: ["rock", "spock"],
+  scissors: ["paper", "lizard"],
+  lizard: ["paper", "spock"],
+  spock: ["rock", "scissors"],
+};
+
+// create scorecard
+const scorecard = {
+  computer: 0,
+  player: 0,
+};
 
 // Helper functions
 function prompt(message) {
   console.log(`=> ${message}`);
 }
 
-function calculateWinner(computerChoice, userChoice) {
-  if (
-    (computerChoice === VALID_CHOICES[0] && userChoice === VALID_CHOICES[2]) ||
-    (computerChoice === VALID_CHOICES[1] && userChoice === VALID_CHOICES[0]) ||
-    (computerChoice === VALID_CHOICES[2] && userChoice === VALID_CHOICES[1])
-  ) {
-    return `${computerChoice} beats ${userChoice}, the computer wins`;
-  } else if (
-    (userChoice === VALID_CHOICES[0] && computerChoice === VALID_CHOICES[2]) ||
-    (userChoice === VALID_CHOICES[1] && computerChoice === VALID_CHOICES[0]) ||
-    (userChoice === VALID_CHOICES[2] && computerChoice === VALID_CHOICES[1])
-  ) {
-    return `${userChoice} beats ${computerChoice}, you win!`;
+function printSelectionOptions() {
+  prompt("Type the code in the brackets [] to select your input...");
+  VALID_CHOICES_KEYS.forEach((key) => {
+    prompt(`[${key}]: ${VALID_CHOICES[key]}`);
+  });
+}
+
+function playerWins(choice, computerChoice) {
+  return WINNING_COMBOS[choice].includes(computerChoice);
+}
+
+function displayWinner(choice, computerChoice) {
+  if (playerWins(choice, computerChoice)) {
+    prompt("You win!\n");
+    updateScorecard("player");
+  } else if (choice === computerChoice) {
+    prompt("It's a tie!\n");
   } else {
-    return `It's a tie`;
+    updateScorecard("computer");
+    prompt("Computer wins!\n");
   }
 }
 
-let anotherGame = true;
-while (anotherGame) {
+function updateScorecard(winner) {
+  scorecard[winner] += 1;
+}
+
+function winner() {
+  if (scorecard["computer"] === 5) {
+    return "Computer Wins the Match";
+  } else if (scorecard["player"] === 5) {
+    return "You Win the Match";
+  } else {
+    return null; // no one has won yet
+  }
+}
+
+// START OF GAME
+
+prompt(`Welcome to ${VALID_CHOICES_VALUES.join(", ")}.`);
+prompt("You will be playing me, THE COMPUTER.");
+prompt(`First person (or machine) to 5 games wins!`);
+
+let gameCounter = 1;
+while (!winner()) {
+  // Display current state of game
+  prompt(`----------Game ${gameCounter}--------------`);
+  prompt(
+    `COMPUTER: ${scorecard["computer"]} | PLAYER: ${scorecard["player"]}\n`
+  );
   // Get User's input
-  prompt("Choose one: rock, paper, scissors");
+  printSelectionOptions();
   let userChoice = readline.question();
 
-  while (!VALID_CHOICES.includes(userChoice)) {
+  while (!VALID_CHOICES_KEYS.includes(userChoice.toLowerCase())) {
     prompt("Incorrect choice, please try again...");
     userChoice = readline.question();
   }
 
   // Get Computer input
-  let computerChoice = VALID_CHOICES[Math.ceil(Math.random() * 2)];
+  let computerChoice = VALID_CHOICES_KEYS[Math.ceil(Math.random() * 4)];
 
   // Get result
-  let winner = calculateWinner(computerChoice, userChoice);
-
-  // Display result
-  prompt(winner);
-
-  // Would the user like to play again
-  prompt("Would you like to play again? (y/n)");
-  let playAgain = readline.question();
-
-  while (!["y", "n"].includes(playAgain.toLowerCase())) {
-    prompt("Incorrect choice, please select again (y/n)...");
-    playAgain = readline.question();
-  }
-
-  anotherGame = playAgain === "y";
+  displayWinner(VALID_CHOICES[userChoice], VALID_CHOICES[computerChoice]);
+  gameCounter++;
 }
+
+prompt(winner());
